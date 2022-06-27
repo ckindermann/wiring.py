@@ -49,7 +49,7 @@ jobs:
         run: |
             mv python_module.rs wiring.rs/src/
             mv Cargo.toml wiring.rs/ 
-            echo "mod python_module;" >> man-parse-rust/src/lib.rs 
+            echo "mod python_module;" >> wiring.rs/src/lib.rs 
 
       - name: Build wheel 
         working-directory: wiring.rs
