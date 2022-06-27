@@ -6,28 +6,59 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Upload Python Package
+name: Python Package
 
-on:
-  release:
-    types: [published]
-
-permissions:
-  contents: read
+on: [push]
 
 jobs:
-  deploy:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macOS-10.15]
+        #os: [ubuntu-20.04, windows-2019, macOS-10.15] #windows has problems with move
+        python-version: ['2.7', '3.7', '3.8']
 
-    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install build
-  
+      - uses: actions/checkout@v3
+
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+            repository: ckindermann/tree-sitter-manchester
+            path: tree-sitter-manchester
+
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: nightly
+            override: true
+            components: rustfmt, clippy 
+
+      - uses: actions/setup-python@v3
+
+      - name: Checkout another tools repo  
+        uses: actions/checkout@v3
+        with:
+            repository: ontodev/wiring.rs
+            path: wiring.rs
+
+      - name: Setup Bindings 
+        run: |
+            mv python_module.rs wiring.rs/src/
+            mv Cargo.toml wiring.rs/ 
+            echo "mod python_module;" >> man-parse-rust/src/lib.rs 
+
+      - name: Build wheel 
+        working-directory: wiring.rs
+        run: | 
+            pip install -U pip maturin
+            maturin build
+
+      - name: Download wheel 
+        uses: actions/upload-artifact@v3
+        with:
+            name: ${{ matrix.os }}-${{ matrix.python-version }}
+            path: wiring.rs/target/wheels/*.whl
