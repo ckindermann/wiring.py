@@ -16,10 +16,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, macOS-10.15]
+        os: [ubuntu-20.04, macOS-10.15, windows-2019]
         #os: [ubuntu-20.04, windows-2019, macOS-10.15] #windows has problems with move
-        python-version: ['2.7', '3.7', '3.8']
-
+        #python-version: ['2.7', '3.7', '3.8']
+        python-version: ["cp38", "cp39", "cp310", "pp38", "pp39"] 
 
     steps:
       - uses: actions/checkout@v3
