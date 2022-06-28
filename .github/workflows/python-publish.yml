@@ -19,7 +19,7 @@ jobs:
           #os: [ubuntu-20.04, windows-2019]
         os: [ubuntu-20.04, macOS-10.15, windows-2019]
         #python-version: ["cp38", "cp39"] 
-        python-version: ["cp38", "cp39", "cp310", "pp38", "pp39"] 
+        #python-version: ["cp38", "cp39", "cp310", "pp38", "pp39"] 
 
     steps:
       - uses: actions/checkout@v3
@@ -76,7 +76,8 @@ jobs:
       - name: Download wheel 
         uses: actions/upload-artifact@v3
         with:
-            name: ${{ matrix.os }}-${{ matrix.python-version }}
+            #name: ${{ matrix.os }}-${{ matrix.python-version }}
+            name: ${{ matrix.os }}
             path: wiring.rs/target/wheels/*.whl
 
 
