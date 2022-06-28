@@ -16,10 +16,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, macOS-10.15, windows-2019]
-        #os: [ubuntu-20.04, windows-2019, macOS-10.15] #windows has problems with move
-        #python-version: ['2.7', '3.7', '3.8']
-        python-version: ["cp38", "cp39", "cp310", "pp38", "pp39"] 
+        os: [ubuntu-20.04, windows-2019]
+        #os: [ubuntu-20.04, macOS-10.15, windows-2019]
+        python-version: ["cp38", "cp39"] 
+        #python-version: ["cp38", "cp39", "cp310", "pp38", "pp39"] 
 
     steps:
       - uses: actions/checkout@v3
@@ -58,15 +58,28 @@ jobs:
             pip install -U pip maturin
             maturin build
 
+      - name: Create artifact folder
+        run: |
+            mkdir ./artifact
+
       - name: Download artifact
         uses: actions/download-artifact@v3 
         with:
-            path: wiring.rs/
+            path: ./artifact
+
+      - name: Move artifact
+        run: |
+            mv ./artifact/${{ matrix.os }}-${{ matrix.python-version }}/*.whl ./artifact
+            rmdir ./artifact/${{ matrix.os }}-${{ matrix.python-version }}
+
+        #upload single folder
 
       - name: Display structure of downloaded files
         run: ls -R
-        working-directory: wiring.rs/
+        working-directory: ./artifact
+        #working-directory: wiring.rs/
 
+        #should work independently?
       - name: Download wheel 
         uses: actions/upload-artifact@v3
         with:
