@@ -63,3 +63,16 @@ jobs:
         with:
             name: ${{ matrix.os }}-${{ matrix.python-version }}
             path: wiring.rs/target/wheels/*.whl
+
+  publish:
+    needs: build_wheels
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+
+      - name: Display structure of downloaded files
+        run: ls -R
+        # with:
+        #     name: wheels
+        #     path: path/to/artifact
+
+
