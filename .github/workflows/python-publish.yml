@@ -16,10 +16,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-2019]
-        #os: [ubuntu-20.04, macOS-10.15, windows-2019]
-        python-version: ["cp38", "cp39"] 
-        #python-version: ["cp38", "cp39", "cp310", "pp38", "pp39"] 
+          #os: [ubuntu-20.04, windows-2019]
+        os: [ubuntu-20.04, macOS-10.15, windows-2019]
+        #python-version: ["cp38", "cp39"] 
+        python-version: ["cp38", "cp39", "cp310", "pp38", "pp39"] 
 
     steps:
       - uses: actions/checkout@v3
@@ -67,17 +67,6 @@ jobs:
         with:
             path: ./artifact
 
-      - name: Move artifact
-        run: |
-            find ./artifact/ -type f -name "*.whl" | while read fname; do
-                filename=`basename "$fname"`
-                mv "./artifact/$filename" "./artifact"
-            done
-            #mv ./artifact/${{ matrix.os }}-${{ matrix.python-version }}/*.whl ./artifact
-            rmdir ./artifact/${{ matrix.os }}-${{ matrix.python-version }}
-
-        #upload single folder
-
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: ./artifact
@@ -85,8 +74,8 @@ jobs:
 
         #should work independently?
       - name: Download wheel 
-        uses: actions/upload-artifact@v3
-        with:
+      - uses: actions/upload-artifact@v3
+      - with:
             name: ${{ matrix.os }}-${{ matrix.python-version }}
             path: wiring.rs/target/wheels/*.whl
 
