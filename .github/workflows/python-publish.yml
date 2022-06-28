@@ -69,7 +69,11 @@ jobs:
 
       - name: Move artifact
         run: |
-            mv ./artifact/${{ matrix.os }}-${{ matrix.python-version }}/*.whl ./artifact
+            find ./artifact/ -type f -name "*.whl" | while read fname; do
+                filename=`basename "$fname"`
+                mv "./artifact/$filename" "./artifact"
+            done
+            #mv ./artifact/${{ matrix.os }}-${{ matrix.python-version }}/*.whl ./artifact
             rmdir ./artifact/${{ matrix.os }}-${{ matrix.python-version }}
 
         #upload single folder
