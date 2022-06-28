@@ -74,7 +74,7 @@ jobs:
 
         #should work independently?
       - name: Download wheel 
-      - uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
             name: ${{ matrix.os }}-${{ matrix.python-version }}
             path: wiring.rs/target/wheels/*.whl
