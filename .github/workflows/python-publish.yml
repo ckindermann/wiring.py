@@ -66,6 +66,7 @@ jobs:
 
   publish:
     needs: build_wheels
+    steps:
       - name: Download artifact
         uses: actions/download-artifact@v3
 
