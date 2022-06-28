@@ -48,6 +48,7 @@ jobs:
       - name: Setup Bindings 
         run: |
             mv python_module.rs wiring.rs/src/
+            rm wiring.rs/Cargo.toml
             mv Cargo.toml wiring.rs/ 
             echo "mod python_module;" >> wiring.rs/src/lib.rs 
 
