@@ -61,11 +61,11 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3 
         with:
-            path: wiring.rs/artifact
+            path: wiring.rs/
 
       - name: Display structure of downloaded files
         run: ls -R
-        working-directory: wiring.rs/artifact 
+        working-directory: wiring.rs/
 
       - name: Download wheel 
         uses: actions/upload-artifact@v3
