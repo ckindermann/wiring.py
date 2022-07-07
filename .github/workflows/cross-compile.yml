@@ -67,7 +67,8 @@ jobs:
         with:
             #name: ${{ matrix.os }}-${{ matrix.python-version }}
             name: ${{ matrix.os }}
-            path: wiring.rs/target/wheels/*.whl
+            path: dist
+            #path: wiring.rs/target/wheels/*.whl
 
 
 
