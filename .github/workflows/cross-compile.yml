@@ -19,6 +19,8 @@ jobs:
           #os: [ubuntu-20.04, windows-2019]
           #os: [ubuntu-20.04, macOS-10.15, windows-2019]
         os: [ubuntu-20.04]
+        target: [aarch64, armv7]
+
         #python-version: ["cp38", "cp39"] 
         #python-version: ["cp38", "cp39", "cp310", "pp38", "pp39"] 
 
@@ -56,7 +58,9 @@ jobs:
       - uses: messense/maturin-action@v1
         with:
             maturin-version: latest
-            command: build
+            target: ${{ matrix.target }} 
+            manylinux: auto 
+            #command: build
             #args: --release
             args: --release --out dist --no-sdist -m wiring.rs/Cargo.toml
 
