@@ -1,0 +1,72 @@
+# This workflow will upload a Python Package using Twine when a release is created
+# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Python Package
+
+on: [push]
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+          #os: [ubuntu-20.04, windows-2019]
+          #os: [ubuntu-20.04, macOS-10.15, windows-2019]
+        os: [ubuntu-20.04]
+        #python-version: ["cp38", "cp39"] 
+        #python-version: ["cp38", "cp39", "cp310", "pp38", "pp39"] 
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+            repository: ckindermann/tree-sitter-manchester
+            path: tree-sitter-manchester
+
+      - name: Install rust
+        uses: actions-rs/toolchain@v1
+        with:
+            profile: minimal
+            toolchain: stable
+            override: true
+
+      - uses: actions/setup-python@v3
+
+      - name: Checkout another tools repo  
+        uses: actions/checkout@v3
+        with:
+            repository: ontodev/wiring.rs
+            path: wiring.rs
+
+      - name: Setup Bindings 
+        run: |
+            mv python_module.rs wiring.rs/src/
+            rm wiring.rs/Cargo.toml
+            mv Cargo.toml wiring.rs/ 
+            echo "mod python_module;" >> wiring.rs/src/lib.rs 
+
+      - uses: messense/maturin-action@v1
+        with:
+            path: wiring.rs
+            maturin-version: latest
+            command: build
+            args: --release
+
+        #should work independently?
+      - name: Download wheel 
+        uses: actions/upload-artifact@v3
+        with:
+            #name: ${{ matrix.os }}-${{ matrix.python-version }}
+            name: ${{ matrix.os }}
+            path: wiring.rs/target/wheels/*.whl
+
+
+
