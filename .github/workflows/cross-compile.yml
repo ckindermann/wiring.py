@@ -71,7 +71,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
             #name: ${{ matrix.os }}-${{ matrix.python-version }}
-            name: ${{ matrix.os }}
+            #name: ${{ matrix.os }}
+            name: wheel
             path: dist
             #path: wiring.rs/target/wheels/*.whl
 
