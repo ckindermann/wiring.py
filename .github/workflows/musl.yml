@@ -41,7 +41,7 @@ jobs:
       - uses: actions/setup-python@v3 
 
       - name: Build Wheels - manylinux
-        uses: messense/maturin-action@1
+        uses: messense/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
           manylinux: musllinux_1_2
