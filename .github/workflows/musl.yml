@@ -1,0 +1,81 @@
+# This workflow will upload a Python Package using Twine when a release is created
+# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Cross Compilation Musl
+
+on: [push]
+
+jobs:
+
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [
+          { target: "x86_64-unknown-linux-musl", image_tag: "x86_64-musl" },
+          { target: "i686-unknown-linux-musl", image_tag: "i686-musl" },
+          { target: "aarch64-unknown-linux-musl", image_tag: "aarch64-musl" },
+          { target: "armv7-unknown-linux-musleabihf", image_tag: "armv7-musleabihf" },
+          { target: "powerpc64le-unknown-linux-musl", image_tag: "powerpc64le-musl" },
+        ]
+    container:
+      image: docker://messense/rust-musl-cross:${{ matrix.platform.image_tag }}
+      env:
+        CFLAGS_armv7_unknown_linux_musleabihf: '-mfpu=vfpv3-d16'
+    steps: 
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+            repository: ckindermann/tree-sitter-manchester
+            path: tree-sitter-manchester
+
+      - name: Install rust
+        uses: actions-rs/toolchain@v1
+        with:
+            profile: minimal
+            toolchain: stable
+            override: true
+
+      - name: Checkout another tools repo  
+        uses: actions/checkout@v3
+        with:
+            repository: ontodev/wiring.rs
+            path: wiring.rs
+
+      - name: Setup Bindings 
+        run: |
+            mv python_module.rs wiring.rs/src/
+            rm wiring.rs/Cargo.toml
+            mv Cargo.toml wiring.rs/ 
+            echo "mod python_module;" >> wiring.rs/src/lib.rs 
+
+
+      - name: Build Wheels - manylinux
+        uses: messense/maturin-action@main
+        with:
+          target: ${{ matrix.platform.target }}
+          manylinux: auto
+          container: off
+          args: --release --out dist --no-sdist -m wiring.rs/Cargo.toml
+          #args: --no-sdist --release -o dist
+
+      - name: Build Wheels - musllinux
+        uses: messense/maturin-action@main
+        with:
+          target: ${{ matrix.platform.target }}
+          manylinux: musllinux_1_1
+          container: off
+          args: --no-sdist --release -o dist
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
+
+
