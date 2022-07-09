@@ -28,18 +28,21 @@ jobs:
       env:
         CFLAGS_armv7_unknown_linux_musleabihf: '-mfpu=vfpv3-d16'
     steps: 
-      - name: Checkout tools repo
-        uses: actions/checkout@v3
-        with:
-            repository: ckindermann/tree-sitter-manchester
-            path: tree-sitter-manchester
 
-      - name: Install rust
-        uses: actions-rs/toolchain@v1
-        with:
-            profile: minimal
-            toolchain: stable
-            override: true
+      - uses: actions/checkout@v3 
+
+        # - name: Checkout tools repo
+        # - uses: actions/checkout@v3
+        # - with:
+        # -     repository: ckindermann/tree-sitter-manchester
+        # -     path: tree-sitter-manchester
+
+        # - name: Install rust
+        # - uses: actions-rs/toolchain@v1
+        # - with:
+        # -     profile: minimal
+        # -     toolchain: stable
+        # -     override: true
 
       - name: Checkout another tools repo  
         uses: actions/checkout@v3
