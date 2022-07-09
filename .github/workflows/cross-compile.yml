@@ -8,6 +8,10 @@
 
 name: Cross Compilation
 
+#TODO: ARM, MUSL, normal
+#TODO: py 3.6, 3.7, 3.8, 3.9 in Cargo.toml
+#TODO manylinux?
+
 on: [push]
 
 jobs:
@@ -18,7 +22,7 @@ jobs:
       matrix:
           #os: [ubuntu-20.04, windows-2019]
           #os: [ubuntu-20.04, macOS-10.15, windows-2019]
-        os: [ubuntu-latest, ubuntu-20.04, ubuntu-18.04]
+        os: [ubuntu-latest, ubuntu-20.04, ubuntu-18.04] #TODO: do you need to o this ?
         target: [aarch64, armv7, s390x, ppc64le, ppc64]
 
 
@@ -60,7 +64,8 @@ jobs:
         with:
             maturin-version: latest
             target: ${{ matrix.target }} 
-            manylinux: auto 
+            #manylinux: auto 
+            manylinux: musllinux_1_2 
             args: --release --out dist --no-sdist -m wiring.rs/Cargo.toml
 
         #TODO: py 3.6, 3.7, 3.8, 3.9 in Cargo.toml
