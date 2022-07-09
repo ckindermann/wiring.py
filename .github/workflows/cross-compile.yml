@@ -11,15 +11,16 @@ name: Cross Compilation
 on: [push]
 
 jobs:
-  build_wheels:
+  linux-cross:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
           #os: [ubuntu-20.04, windows-2019]
           #os: [ubuntu-20.04, macOS-10.15, windows-2019]
-        os: [ubuntu-20.04]
-        target: [aarch64, armv7]
+        os: [ubuntu-latest, ubuntu-20.04, ubuntu-18.04]
+        target: [aarch64, armv7, s390x, ppc64le, ppc64]
+
 
         #python-version: ["cp38", "cp39"] 
         #python-version: ["cp38", "cp39", "cp310", "pp38", "pp39"] 
@@ -60,12 +61,11 @@ jobs:
             maturin-version: latest
             target: ${{ matrix.target }} 
             manylinux: auto 
-            #command: build
-            #args: --release
             args: --release --out dist --no-sdist -m wiring.rs/Cargo.toml
 
+        #TODO: py 3.6, 3.7, 3.8, 3.9 in Cargo.toml
 
-        #should work independently?
+
       - name: Download wheel 
         uses: actions/upload-artifact@v3
         with:
