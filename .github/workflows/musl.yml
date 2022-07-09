@@ -31,14 +31,21 @@ jobs:
             repository: ontodev/wiring.rs
             path: wiring.rs
 
+      - uses: actions/setup-python@v3 
+
+      - name: Install rust
+        uses: actions-rs/toolchain@v1
+        with:
+            profile: minimal
+            toolchain: stable
+            override: true
+
       - name: Setup Bindings 
         run: |
             mv python_module.rs wiring.rs/src/
             rm wiring.rs/Cargo.toml
             mv Cargo.toml wiring.rs/ 
             echo "mod python_module;" >> wiring.rs/src/lib.rs 
-
-      - uses: actions/setup-python@v2
 
       - name: Build Wheels - manylinux
         uses: messense/maturin-action@v1
@@ -48,9 +55,9 @@ jobs:
           args: --release --out dist  -m wiring.rs/Cargo.toml
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: wheels
+          name: ${{ matrix.os }}
           path: dist
 
 

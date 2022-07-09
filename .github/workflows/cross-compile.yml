@@ -8,7 +8,7 @@
 
 name: Cross Compilation
 
-#TODO: ARM, MUSL, normal
+#TODO: ARM, MUSL, normal (x86)
 #TODO: py 3.6, 3.7, 3.8, 3.9 in Cargo.toml
 #TODO manylinux?
 
@@ -64,8 +64,7 @@ jobs:
         with:
             maturin-version: latest
             target: ${{ matrix.target }} 
-            #manylinux: auto 
-            manylinux: musllinux_1_2 
+            manylinux: auto 
             args: --release --out dist --no-sdist -m wiring.rs/Cargo.toml
 
         #TODO: py 3.6, 3.7, 3.8, 3.9 in Cargo.toml
