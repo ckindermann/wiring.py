@@ -45,7 +45,7 @@ jobs:
         with:
           target: ${{ matrix.platform.target }}
           manylinux: musllinux_1_2
-          args: --release --out dist --no-sdist -m wiring.rs/Cargo.toml
+          args: --release --out dist  -m wiring.rs/Cargo.toml
 
       - name: Upload wheels
         uses: actions/upload-artifact@v2
