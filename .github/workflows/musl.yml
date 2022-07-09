@@ -38,7 +38,7 @@ jobs:
             mv Cargo.toml wiring.rs/ 
             echo "mod python_module;" >> wiring.rs/src/lib.rs 
 
-      - uses: actions/setup-python@v3 
+      - uses: actions/setup-python@v2
 
       - name: Build Wheels - manylinux
         uses: messense/maturin-action@v1
