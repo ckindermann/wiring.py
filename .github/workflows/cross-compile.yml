@@ -8,6 +8,11 @@
 
 name: Cross Compilation
 
+#TODO x86,arm
+#TODO musl, glib
+#TODO linux2014 (just stick with many linux 2014? - I think so)
+#TODO win linux mac
+
 on: [push]
 
 jobs:
@@ -27,12 +32,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Checkout tools repo
-        uses: actions/checkout@v3
-        with:
-            repository: ckindermann/tree-sitter-manchester
-            path: tree-sitter-manchester
 
       - name: Install rust
         uses: actions-rs/toolchain@v1
@@ -63,9 +62,6 @@ jobs:
             manylinux: auto 
             args: --release --out dist -m wiring.rs/Cargo.toml
             #args: --release --out dist --no-sdist -m wiring.rs/Cargo.toml
-
-        #TODO: py 3.6, 3.7, 3.8, 3.9 in Cargo.toml
-
 
       - name: Download wheel 
         uses: actions/upload-artifact@v3
