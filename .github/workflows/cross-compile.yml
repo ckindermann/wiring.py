@@ -56,6 +56,13 @@ jobs:
             mv Cargo.toml wiring.rs/ 
             echo "mod python_module;" >> wiring.rs/src/lib.rs 
 
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v1
+        with:
+            image: tonistiigi/binfmt:latest
+            platforms: all
+
       - uses: messense/maturin-action@v1
         with:
             maturin-version: latest
