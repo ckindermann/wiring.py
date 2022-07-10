@@ -43,3 +43,46 @@ jobs:
         with:
           name: wheels
           path: dist
+
+
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        target: [x64, x86]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Checkout another tools repo  
+        uses: actions/checkout@v3
+        with:
+            repository: ontodev/wiring.rs
+            path: wiring.rs
+
+      - uses: actions/setup-python@v3
+          
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          default: true
+
+      - name: Setup Bindings 
+        run: |
+            mv python_module.rs wiring.rs/src/
+            rm wiring.rs/Cargo.toml
+            mv Cargo.toml wiring.rs/ 
+            echo "mod python_module;" >> wiring.rs/src/lib.rs 
+
+      - name: Build wheels
+        uses: messense/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          args: --release --out dist -m python/Cargo.toml
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist
